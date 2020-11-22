@@ -1,5 +1,7 @@
 import pandas as pd # Used for manipulate with csv file
 import datetime # Used for time control
+import matplotlib.pyplot as plt
+import matplotlib
 
 '''
 This function is used for two purpose
@@ -44,11 +46,28 @@ def classifyTime(Time, file, mode):
                 filterDf['orderPrice'].append(row['orderPrice'])
 
     df = pd.DataFrame(filterDf, columns = ['Time', 'orderPrice'])
+    # print(df)
 
     # Get previous date 2 day and set to file format
     previous8Days = datetime.datetime.now() - datetime.timedelta(days=8)
     previous8Days = previous8Days.strftime("%y/%m/%d %H:%M")
     
+
+    def generateGraph(randomTime, order):
+        for i in range(len(randomTime)):
+            randomTime[i] = datetime.datetime.strptime(randomTime[i], "%y/%m/%d %H:%M")
+        randomTime = randomTime[:100]
+        order = order[:100]
+        print(order)
+        randomTime = matplotlib.dates.date2num(randomTime)
+        plt.scatter(randomTime, order, label="stars", color="green", marker="1", s=3)
+        # plt.plot(randomTime, order)
+        plt.xlabel('x - axis')
+        plt.ylabel('y - axis')
+
+        plt.title('Line graph!')
+
+        plt.show()
     
     
     # Result is current date - num of days
@@ -68,7 +87,7 @@ def classifyTime(Time, file, mode):
         if tempDay == currentDay: actual = actual + row['orderPrice']
 
     print("Actual: {}".format(actual))
-
+    # print(df["Time"][0])
     # Filter currect date to previous 7 date from file
     selected = df[(df['Time'] < currentDateStr) & (df['Time'] >= previous8Days)]
     
